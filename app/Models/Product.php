@@ -2,23 +2,25 @@
 
 namespace App\Models;
 
-use App\Scoping\Scoper;
+use App\Models\Traits\CanBeScoped;
+use App\Models\Traits\HasPrice;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
+use Money\Currencies\ISOCurrencies;
+use Money\Currency;
+use Money\Formatter\IntlMoneyFormatter;
+use Money\Money;
+
 
 class Product extends Model
 {
     use HasFactory;
+    use CanBeScoped;
+    use HasPrice;
 
     public function getRouteKeyName()
     {
         return 'slug';
-    }
-
-
-    public function scopeWithScopes(Builder $builder,$scopes=[]){
-        return (new Scoper(request()))->apply($builder,$scopes);
     }
 
     public function categories(){
@@ -28,4 +30,6 @@ class Product extends Model
     public function variations(){
         return $this->hasMany(ProductVariation::class)->orderBy('order');
     }
+
+
 }

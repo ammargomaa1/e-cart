@@ -18,6 +18,7 @@ class ProductsIndexResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
+            'price' => $this->formattedPrice,
             'description' => $this->description
         ];
     }
