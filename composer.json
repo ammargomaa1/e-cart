@@ -15,7 +15,8 @@
         "moneyphp/money": "^4.0",
         "phpmd/phpmd": "^2.12.0",
         "phpstan/phpstan": "^1.7.14",
-        "squizlabs/php_codesniffer": "^3.7.0"
+        "squizlabs/php_codesniffer": "^3.7.0",
+        "tymon/jwt-auth": "^1.0.2"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.6",
