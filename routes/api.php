@@ -9,4 +9,7 @@ Route::resource('products',\App\Http\Controllers\Products\ProductController::cla
 
 Route::group(['prefix'=>'auth'],function(){
    Route::post('register',[\App\Http\Controllers\Auth\RegisterController::class,'action']);
+   Route::post('login',[\App\Http\Controllers\Auth\LoginController::class,'action']);
+   Route::get('me',[\App\Http\Controllers\Auth\MeController::class,'action']);
+
 });
