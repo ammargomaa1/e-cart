@@ -9,17 +9,16 @@ use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-    protected $cart;
 
-    public function __construct(Cart $cart)
+
+    public function __construct()
     {
         $this->middleware(['auth:api']);
-        $this->cart = $cart;
     }
 
     
-    public function store(CartStoreRequest $request){
+    public function store(CartStoreRequest $request,Cart $cart){
 
-        $this->cart->add($request->products);
+        $cart->add($request->products);
     }
 }
