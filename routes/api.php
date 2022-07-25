@@ -18,4 +18,8 @@ Route::group(['prefix'=>'auth'],function(){
 
 });
 
-Route::resource('cart',CartController::class);
+Route::resource('cart',CartController::class,[
+   'parameters' => [
+      'cart' =>'productVariation'
+   ]
+]);
