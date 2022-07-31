@@ -28,6 +28,10 @@ class Cart {
         ]);
     }
 
+    public function isEmpty() {
+        return $this->user->cart->sum('pivot.quantity') === 0;
+    }
+
     public function delete($productId)
     {
         $this->user->cart()->detach($productId);
@@ -36,6 +40,20 @@ class Cart {
     public function empty()
     {
         $this->user->cart()->detach();
+    }
+
+    public function subTotal()
+    {
+        $subtotal = $this->user->cart->sum(function ($product){
+            return $product->price->amount() * $product->pivot->quantity;
+        }) ;
+
+        return new Money($subtotal);
+    }
+
+    public function total()
+    {
+        return $this->subTotal();
     }
 
     protected function getStorePayload($products){
@@ -53,6 +71,9 @@ class Cart {
 
         return 0 ;
     }
+
+
+    
 
     
 }
