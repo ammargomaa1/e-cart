@@ -24,7 +24,7 @@ class CartIndexTest extends TestCase
         $user->cart()->sync(
             $product = ProductVariation::factory()->create()
         );
-        $response = $this->jsonAs($user,'GET', 'api/cart')
+        $response = $this->jsonAs($user, 'GET', 'api/cart')
             ->assertJsonFragment([
                 'id' => $product->id
             ]);
@@ -35,7 +35,7 @@ class CartIndexTest extends TestCase
         $user = User::factory()->create();
 
         
-        $response = $this->jsonAs($user,'GET', 'api/cart')
+        $response = $this->jsonAs($user, 'GET', 'api/cart')
             ->assertJsonFragment([
                 'subtotal' => "0"
             ]);
@@ -46,9 +46,27 @@ class CartIndexTest extends TestCase
         $user = User::factory()->create();
 
         
-        $response = $this->jsonAs($user,'GET', 'api/cart')
+        $response = $this->jsonAs($user, 'GET', 'api/cart')
             ->assertJsonFragment([
                 'total' => "0"
+            ]);
+    }
+
+    public function test_it_syncs_the_cart()
+    {
+        $user = User::factory()->create();
+        
+        $user->cart()->attach(
+            $product = ProductVariation::factory()->create(),
+            [
+                'quantity' => 2
+            ]
+        );
+
+        
+        $response = $this->jsonAs($user, 'GET', 'api/cart')
+            ->assertJsonFragment([
+                'changed' => true
             ]);
     }
 }
