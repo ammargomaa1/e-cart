@@ -18,7 +18,7 @@ class AddressIndexTest extends TestCase
      */
     public function test_it_fails_if_user_unauthenticated()
     {
-        $response = $this->json('DELETE', 'api/cart/1')
+        $response = $this->json('GET', 'api/addresses')
             ->assertStatus(401);
     }
 
