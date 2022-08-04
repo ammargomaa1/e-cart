@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\MeController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Cart\CartController;
+use App\Http\Controllers\Countries\CountryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,6 +14,10 @@ Route::resource('categories',\App\Http\Controllers\Categories\CategoryController
 Route::resource('products',\App\Http\Controllers\Products\ProductController::class);
 
 Route::resource('addresses', AddressController::class);
+
+
+Route::resource('countries', CountryController::class);
+
 
 
 Route::group(['prefix'=>'auth'],function(){
