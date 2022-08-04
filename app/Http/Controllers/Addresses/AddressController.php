@@ -29,7 +29,8 @@ class AddressController extends Controller
             'address_1',
             'city',
             'postal_code',
-            'country_id'
+            'country_id',
+            'default'
         ]));
 
         $request->user()->addresses()->save($address);
