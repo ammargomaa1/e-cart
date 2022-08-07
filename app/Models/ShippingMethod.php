@@ -10,4 +10,8 @@ class ShippingMethod extends Model
 {
     use HasFactory;
     use HasPrice;
+
+    public function countries(){
+        return $this->belongsToMany(Country::class);
+    }
 }
