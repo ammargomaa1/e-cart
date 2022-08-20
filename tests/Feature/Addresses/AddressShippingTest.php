@@ -59,4 +59,6 @@ class AddressShippingTest extends TestCase
                 'id' => $shipping->id
             ]);
     }
+
+    
 }

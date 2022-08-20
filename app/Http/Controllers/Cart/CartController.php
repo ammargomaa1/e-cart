@@ -26,7 +26,7 @@ class CartController extends Controller
         ]);
 
         return (new CartResource($request->user()))->additional([
-            'meta' => $this->meta($cart)
+            'meta' => $this->meta($cart,$request)
         ]);
     }
     
@@ -45,11 +45,11 @@ class CartController extends Controller
     }
 
 
-    protected function meta(Cart $cart){
+    protected function meta(Cart $cart, Request $request){
         return [
             'empty' => $cart->isEmpty(),
             'subtotal' => $cart->subTotal()->formatted(),
-            'total' => $cart->total()->formatted(),
+            'total' => $cart->withShipping($request->shipping_method_id)->total()->formatted(),
             'changed' => $cart->hasChanged()
         ];
     }

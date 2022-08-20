@@ -2,35 +2,45 @@
 
 namespace App\Cart;
 
+use App\Models\ShippingMethod;
 use App\Models\User;
 
-class Cart {
-
+class Cart
+{
     protected $user;
 
     protected $changed = false;
 
+    protected $shipping;
 
     public function __construct(User $user)
     {
         $this->user = $user;
     }
 
-    public function add($products){
-
+    public function add($products)
+    {
         $this->user->cart()->syncWithoutDetaching(
             $this->getStorePayload($products)
         );
     }
 
-    public function update($productId,$quantity){
+    public function withShipping($shippingId)
+    {
+        $this->shipping = ShippingMethod::find($shippingId);
 
-        $this->user->cart()->updateExistingPivot($productId,[
+        return $this;
+    }
+
+    public function update($productId, $quantity)
+    {
+        $this->user->cart()->updateExistingPivot($productId, [
             'quantity' => $quantity
         ]);
     }
 
-    public function isEmpty() {
+    public function isEmpty()
+    {
         return $this->user->cart->sum('pivot.quantity') === 0;
     }
 
@@ -46,7 +56,7 @@ class Cart {
 
     public function subTotal()
     {
-        $subtotal = $this->user->cart->sum(function ($product){
+        $subtotal = $this->user->cart->sum(function ($product) {
             return $product->price->amount() * $product->pivot->quantity;
         }) ;
 
@@ -55,13 +65,16 @@ class Cart {
 
     public function total()
     {
+        if ($this->shipping) {
+            return $this->subTotal()->add($this->shipping->price);
+        }
+
         return $this->subTotal();
     }
 
     public function sync()
     {
-        return $this->user->cart->each(function($product){
-
+        return $this->user->cart->each(function ($product) {
             $quantity = $product->minStock($product->pivot->quantity);
 
             $this->changed = $quantity != $product->pivot->quantity;
@@ -72,28 +85,26 @@ class Cart {
         });
     }
 
-    public function hasChanged(){
+    public function hasChanged()
+    {
         return $this->changed;
     }
 
-    protected function getStorePayload($products){
-        return collect($products)->keyBy('id')->map(function ($product){
+    protected function getStorePayload($products)
+    {
+        return collect($products)->keyBy('id')->map(function ($product) {
             return [
                 'quantity' => $product['quantity'] + $this->getCurrentQuantity($product['id'])
             ] ;
         })->toArray();
     }
 
-    protected function getCurrentQuantity($productId){
+    protected function getCurrentQuantity($productId)
+    {
         if ($product = $this->user->cart->where('id', $productId)->first()) {
             return $product->pivot->quantity;
         }
 
         return 0 ;
     }
-
-
-    
-
-    
 }

@@ -2,9 +2,9 @@
 
 namespace App\Cart;
 
+use NumberFormatter;
 use Money\Currencies\ISOCurrencies;
 use Money\Currency;
-
 use Money\Formatter\IntlMoneyFormatter;
 use Money\Money as BaseMoney;
 
@@ -14,7 +14,7 @@ class Money
 
     public function __construct($value)
     {
-        $this->money = new BaseMoney($value,new Currency('EGP'));
+        $this->money = new BaseMoney($value, new Currency('EGP'));
     }
 
     public function amount()
@@ -25,11 +25,22 @@ class Money
     public function formatted()
     {
         $formatter = new IntlMoneyFormatter(
-            new \NumberFormatter('en_EGP',\NumberFormatter::DECIMAL),
+            new NumberFormatter('en_EGP', NumberFormatter::CURRENCY),
             new ISOCurrencies()
         );
 
         return $formatter->format($this->money);
     }
 
+    public function add(Money $money)
+    {
+        $this->money = $this->money->add($money->instance());
+
+        return $this;
+    }
+
+    public function instance()
+    {
+        return $this->money;
+    }
 }
