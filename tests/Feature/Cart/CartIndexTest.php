@@ -3,6 +3,7 @@
 namespace Tests\Feature\Cart;
 
 use App\Models\ProductVariation;
+use App\Models\ShippingMethod;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -34,7 +35,7 @@ class CartIndexTest extends TestCase
     {
         $user = User::factory()->create();
 
-        
+
         $response = $this->jsonAs($user, 'GET', 'api/cart')
             ->assertJsonFragment([
                 'subtotal' => "0"
@@ -45,7 +46,7 @@ class CartIndexTest extends TestCase
     {
         $user = User::factory()->create();
 
-        
+
         $response = $this->jsonAs($user, 'GET', 'api/cart')
             ->assertJsonFragment([
                 'total' => "0"
@@ -55,7 +56,7 @@ class CartIndexTest extends TestCase
     public function test_it_syncs_the_cart()
     {
         $user = User::factory()->create();
-        
+
         $user->cart()->attach(
             $product = ProductVariation::factory()->create(),
             [
@@ -63,10 +64,32 @@ class CartIndexTest extends TestCase
             ]
         );
 
-        
+
         $response = $this->jsonAs($user, 'GET', 'api/cart')
             ->assertJsonFragment([
                 'changed' => true
             ]);
+    }
+
+    public function test_it_shows_a_formatted_total_with_shipping()
+    {
+        $user = User::factory()->create();
+
+        $shipping = ShippingMethod::factory()->create([
+            'price' => 1000
+        ]);
+
+        $user->cart()->attach(
+            $product = ProductVariation::factory()->create(),
+            [
+                'quantity' => 2
+            ]
+        );
+
+
+        $response = $this->jsonAs($user, 'GET', "api/cart?shipping_method_id={$shipping->id}")
+                ->assertJsonFragment([
+                'total' => 'EGP 10.00'
+                ]);
     }
 }
