@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\MeController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Cart\CartController;
 use App\Http\Controllers\Countries\CountryController;
+use App\Http\Controllers\Orders\OrderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,6 +16,9 @@ Route::resource('categories', \App\Http\Controllers\Categories\CategoryControlle
 Route::resource('products', \App\Http\Controllers\Products\ProductController::class);
 
 Route::resource('addresses', AddressController::class);
+
+Route::resource('orders', OrderController::class);
+
 
 Route::get('addresses/{address}/shipping', [AddressShippingController::class,'action']);
 
