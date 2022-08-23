@@ -90,6 +90,11 @@ class Cart
         return $this->changed;
     }
 
+    public function products()
+    {
+        return $this->user->cart;
+    }
+
     protected function getStorePayload($products)
     {
         return collect($products)->keyBy('id')->map(function ($product) {
