@@ -96,6 +96,12 @@ class OrderStoreTest extends TestCase
         $user = User::factory()->create();
         list($address, $shipping) = $this->orderDependencies($user);
 
+        
+        $user->cart()->sync(
+            $product = $this->productWithStock()
+        );
+
+
         $this->jsonAs($user,'POST', 'api/orders',[
             'address_id' => $address->id,
             'shipping_method_id' => $shipping->id
@@ -116,13 +122,14 @@ class OrderStoreTest extends TestCase
 
         list($address, $shipping) = $this->orderDependencies($user);
 
-        $this->jsonAs($user, 'POST', 'api/orders', [
+        $response = $this->jsonAs($user, 'POST', 'api/orders', [
             'address_id' => $address->id,
             'shipping_method_id' => $shipping->id
         ]);
 
         $this->assertDatabaseHas('product_variation_order', [
-                    'product_variation_id' => $product->id
+                    'product_variation_id' => $product->id,
+                    'order_id' => $response->json()['data']['id']
                 ]);
 
     }
@@ -183,13 +190,15 @@ class OrderStoreTest extends TestCase
 
         list($address, $shipping) = $this->orderDependencies($user);
 
-        $this->jsonAs($user, 'POST', 'api/orders', [
+        $response = $this->jsonAs($user, 'POST', 'api/orders', [
             'address_id' => $address->id,
             'shipping_method_id' => $shipping->id
         ]);
 
 
-        Event::assertDispatched(OrderCreated::class);
+        Event::assertDispatched(OrderCreated::class,function($event) use ($response) {
+            return $event->order->id ===  $response->json()['data']['id'];
+        });
 
     }
 
