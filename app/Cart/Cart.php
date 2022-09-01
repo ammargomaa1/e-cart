@@ -77,7 +77,11 @@ class Cart
         return $this->user->cart->each(function ($product) {
             $quantity = $product->minStock($product->pivot->quantity);
 
-            $this->changed = $quantity != $product->pivot->quantity;
+            if ($quantity != $product->pivot->quantity) {
+                $this->changed = true;
+            }
+
+            
 
             $product->pivot->update([
                 'quantity' => $quantity,
